@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BasisApplication</string>
+    <string name="sample_txt">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
 </resources>
