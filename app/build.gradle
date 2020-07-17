@@ -37,4 +37,7 @@ dependencies {
 //RxJAva
     implementation "io.reactivex.rxjava3:rxjava:3.0.4"
 
+    //CardView Stack
+    implementation "com.yuyakaido.android:card-stack-view:2.3.4"
+
 }
