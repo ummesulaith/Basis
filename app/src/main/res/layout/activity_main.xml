@@ -14,10 +14,13 @@
         android:text="Hello World!"
         />
 
+
     <com.yuyakaido.android.cardstackview.CardStackView
+        android:layout_margin="15dp"
         android:id="@+id/card_stack_view"
+        android:background="@color/colorAccent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="550dp"
         android:padding="4dp"
         android:clipToPadding="false">
     </com.yuyakaido.android.cardstackview.CardStackView>

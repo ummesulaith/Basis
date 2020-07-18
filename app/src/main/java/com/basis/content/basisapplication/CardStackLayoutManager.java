@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class CardStackLayoutManager extends RecyclerView.Adapter<CardStackLayoutManager.ViewHolder> {
+class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStackLayoutManagerAdapter.ViewHolder> {
 
     private ArrayList<String> mContent = new ArrayList<>();
     private Context mContext;
 
-    public CardStackLayoutManager(ArrayList<String> mContent, Context mContext) {
+    public CardStackLayoutManagerAdapter(ArrayList<String> mContent, Context mContext) {
         this.mContent = mContent;
         this.mContext = mContext;
     }
