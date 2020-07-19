@@ -55,23 +55,25 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
-        initData();
-        InvokeRetrofit();
+//        initData();
 
+        InvokeRetrofit();
 
     }
 
     private void initData()
     {
-        mContent.add("\n" +
-                "            \"Text\": \"Felis long weekend in diameter and hatred nutrition and convenience. " +
-                "It imperdie than one casino each. Sem players sterilized sauce to the sauce life. Quiver or ugly or need now");
 
-        mContent.add("Cancel football tomorrow, but the arc Ut et drink recipes. " +
-                "Lobortis a lot of taste chili in. The latest television ecological website link to propaganda sometimes.");
 
-        mContent.add("Competition thermal Holder Place Holder volleyball soccer kids are sad." +
-                " Drink at least here in the quiver or even ugly now. Sed carrots airline does not need to focus on soccer");
+//        mContent.add("\n" +
+//                "            \"Text\": \"Felis long weekend in diameter and hatred nutrition and convenience. " +
+//                "It imperdie than one casino each. Sem players sterilized sauce to the sauce life. Quiver or ugly or need now");
+//
+//        mContent.add("Cancel football tomorrow, but the arc Ut et drink recipes. " +
+//                "Lobortis a lot of taste chili in. The latest television ecological website link to propaganda sometimes.");
+//
+//        mContent.add("Competition thermal Holder Place Holder volleyball soccer kids are sad." +
+//                " Drink at least here in the quiver or even ugly now. Sed carrots airline does not need to focus on soccer");
 
 
         initCardStackView();
@@ -182,9 +184,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(MyJsonConverter.create())
                 .build();
-
 
 
         Data_retrofitInterface api = retrofit.create(Data_retrofitInterface.class);
@@ -196,7 +197,12 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                 if (response.isSuccessful())
                 {
                     Log.i(TAG,"Response isSuccess"+response.code());
-
+                    Contentdata contentdata = response.body();
+                    for (int i =0;i<contentdata.getData().size();i++)
+                    {
+                        mContent.add(contentdata.getData().get(i).getText());
+                    }
+                    initCardStackView();
 
 
                 }else
