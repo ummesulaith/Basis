@@ -32,18 +32,26 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation 'com.google.android.material:material:1.2.0-beta01'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
     //http call
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
+    //Retrofit-2 RxJava
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+
+
     //gson converter
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-//RxJAva
-//    implementation "io.reactivex.rxjava3:rxjava:3.0.4"
+
+    //RxJAva and RxAndroid
+    implementation "io.reactivex.rxjava3:rxjava:3.0.4"
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+
+
 
     //CardView Stack
     implementation "com.yuyakaido.android:card-stack-view:2.3.4"
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
 
 
