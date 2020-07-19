@@ -2,32 +2,17 @@ package com.basis.content.basisapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
-import androidx.recyclerview.widget.DiffUtil;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Converter;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 import android.view.animation.DecelerateInterpolator;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.basis.content.basisapplication.Adapter.CardStackLayoutManagerAdapter;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
@@ -37,11 +22,6 @@ import com.yuyakaido.android.cardstackview.RewindAnimationSetting;
 import com.yuyakaido.android.cardstackview.StackFrom;
 
 
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements CardStackListener {

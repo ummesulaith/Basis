@@ -1,4 +1,4 @@
-package com.basis.content.basisapplication;
+package com.basis.content.basisapplication.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,12 +7,14 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.basis.content.basisapplication.R;
+
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStackLayoutManagerAdapter.ViewHolder> {
+public class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStackLayoutManagerAdapter.ViewHolder> {
 
     private ArrayList<String> mContent = new ArrayList<>();
     private Context mContext;

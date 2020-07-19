@@ -1,4 +1,4 @@
-package com.basis.content.basisapplication;
+package com.basis.content.basisapplication.Model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
