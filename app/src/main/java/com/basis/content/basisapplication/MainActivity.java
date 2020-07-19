@@ -4,16 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
 
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -37,9 +33,6 @@ import com.yuyakaido.android.cardstackview.StackFrom;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CardStackListener {
 
@@ -56,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     ProgressDialog proDialog;
 
     private ArrayList<Contentdata> mContent = new ArrayList<>() ;
-
+    ArrayList<String> result = new ArrayList<>();
 
     CompositeDisposable compositeDisposable;
 
@@ -71,10 +64,9 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
         compositeDisposable = new CompositeDisposable();
 
+        Invoke();
 
 
-//        InvokeRetrofit();
-        initCardStackView();
 
     }
 
@@ -93,11 +85,10 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
         if (manager.getTopPosition() == adapter.getItemCount()) {
             // -------------------- last position reached, do something ---------------------
-             proDialog = ProgressDialog.show(this, "title", "message");
+//             proDialog = ProgressDialog.show(this, "title", "message");
 
-//        initData();
-
-            proDialog.dismiss();
+            initCardStackView();
+//            proDialog.dismiss();
         }
 
 
@@ -160,52 +151,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         }
     }
 
-//    private void InvokeRetrofit()
-//    {
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                .addConverterFactory(MyJsonConverter.create())
-//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-//                .build();
-//
-//
-//        Data_retrofitInterface api = retrofit.create(Data_retrofitInterface.class);
-//        Observable<Contentdata> call = api.getdata();
-//        call.enqueue(new Callback<Contentdata>() {
-//            @Override
-//            public void onResponse(Call<Contentdata> call, Response<Contentdata> response) {
-//
-//                if (response.isSuccessful())
-//                {
-//                    Log.i(TAG,"Response isSuccess"+response.code());
-//                    Contentdata contentdata = response.body();
-//                    for (int i =0;i<contentdata.getData().size();i++)
-//                    {
-//                        mContent.add(contentdata.getData().get(i).getText());
-//                    }
-//                    initCardStackView();
-//
-//
-//                }else
-//                {
-//                    Log.i(TAG,"Response"+response.message());
-//
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Contentdata> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-//                Log.i(TAG,"Response failure"+t.getMessage());
-//
-//
-//
-//            }
-//        });
-//    }
+
 
 
     @Override
@@ -216,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     private void Invoke()
     {
+        proDialog = ProgressDialog.show(this, "Please Wait", "Data is loading...");
 
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -225,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                 .build();
                 Data_retrofitInterface api = retrofit.create(Data_retrofitInterface.class);
 
+                initCardStackView();
 
                 compositeDisposable.add(api.getdata()
              .subscribeOn(Schedulers.io())
@@ -239,11 +187,14 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
                                 for (int i = 0;i<mContent.getData().size();i++)
                                 {
-                                    mContent.getData().get(i).getText();
+
+                                   result.add(mContent.getData().get(i).getText());
                                     Log.i(TAG,"Chekcing response"+mContent.getData().get(i).getText());
 
                                 }
-
+                                proDialog.dismiss();
+                                adapter = new CardStackLayoutManagerAdapter(result,this);
+                                cardStackView.setAdapter(adapter);
 
                                     } else
                                         Toast.makeText(this, "No data found!", Toast.LENGTH_SHORT).show();
@@ -253,30 +204,12 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     }
 
-//    private void handleResponse(Contentdata contentdata) {
-//
-//
-//
-////        mAndroidArrayList = new ArrayList<>(androidList);
-//        adapter = new CardStackLayoutManagerAdapter(mContent);
-//        cardStackView.setAdapter(adapter);
-//    }
-//
-//
-//
-//
-//
-//    private void handleError(Throwable error) {
-//
-//        Toast.makeText(this, "Error "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//        Log.i(TAG,"handle Error"+error.getLocalizedMessage());
-//    }
+
 private void initCardStackView()
 {
     manager = new CardStackLayoutManager(this,this);
 
-    adapter = new CardStackLayoutManagerAdapter(mContent,this);
-    cardStackView.setAdapter(adapter);
+
     cardStackView.setLayoutManager(manager);
 
     Log.i(TAG,"Adpater"+adapter);
@@ -290,7 +223,7 @@ private void initCardStackView()
 
 
 
-Invoke();
+
 
 }
 
