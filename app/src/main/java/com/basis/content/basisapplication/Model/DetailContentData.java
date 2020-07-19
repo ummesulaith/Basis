@@ -3,7 +3,9 @@ package com.basis.content.basisapplication.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class DetailContentData {
+import java.util.List;
+
+public class DetailContentData extends Contentdata {
     @SerializedName("id")
     @Expose
     private String id;
@@ -12,8 +14,8 @@ public class DetailContentData {
     private String text;
 
 
-
-    public DetailContentData(String id, String text) {
+    public DetailContentData(List<DetailContentData> data, String id, String text) {
+        super(data);
         this.id = id;
         this.text = text;
     }

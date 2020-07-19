@@ -7,19 +7,23 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.basis.content.basisapplication.Model.Contentdata;
+import com.basis.content.basisapplication.Model.DetailContentData;
 import com.basis.content.basisapplication.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 public class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStackLayoutManagerAdapter.ViewHolder> {
 
-    private ArrayList<String> mContent = new ArrayList<>();
+    private ArrayList<Contentdata> mContent= new ArrayList<>() ;
     private Context mContext;
 
-    public CardStackLayoutManagerAdapter(ArrayList<String> mContent, Context mContext) {
+    public CardStackLayoutManagerAdapter(ArrayList<Contentdata> mContent, Context mContext) {
         this.mContent = mContent;
         this.mContext = mContext;
     }
@@ -35,7 +39,14 @@ public class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStac
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtContent.setText(mContent.get(position));
+
+
+        holder.txtContent.setText( mContent.get(position).getData().get(position).getText());
+
+            System.out.println("Swipe::"+ mContent.get(position).getData().get(position).getData().get(position).getText());
+
+
+
 
     }
 
@@ -43,7 +54,7 @@ public class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStac
 
     @Override
     public int getItemCount() {
-      return   mContent.size();
+        return mContent == null ? 0 : mContent.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

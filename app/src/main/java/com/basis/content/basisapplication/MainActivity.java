@@ -2,10 +2,17 @@ package com.basis.content.basisapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
-import retrofit2.Call;
+
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.app.ProgressDialog;
@@ -30,6 +37,9 @@ import com.yuyakaido.android.cardstackview.StackFrom;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CardStackListener {
 
@@ -37,13 +47,18 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
 
     private static final String TAG = "Swipe";
-    private ArrayList<String> mContent = new ArrayList<>();
+
     CardStackView cardStackView;
     CardStackLayoutManager manager;
 
     private GestureDetectorCompat mDetector;
     CardStackLayoutManagerAdapter adapter;
     ProgressDialog proDialog;
+
+    private ArrayList<Contentdata> mContent = new ArrayList<>() ;
+
+
+    CompositeDisposable compositeDisposable;
 
 
 
@@ -54,50 +69,16 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         cardStackView = (CardStackView)findViewById(R.id.card_stack_view);
 
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
-
-//        initData();
-
-        InvokeRetrofit();
-
-    }
-
-    private void initData()
-    {
+        compositeDisposable = new CompositeDisposable();
 
 
-//        mContent.add("\n" +
-//                "            \"Text\": \"Felis long weekend in diameter and hatred nutrition and convenience. " +
-//                "It imperdie than one casino each. Sem players sterilized sauce to the sauce life. Quiver or ugly or need now");
-//
-//        mContent.add("Cancel football tomorrow, but the arc Ut et drink recipes. " +
-//                "Lobortis a lot of taste chili in. The latest television ecological website link to propaganda sometimes.");
-//
-//        mContent.add("Competition thermal Holder Place Holder volleyball soccer kids are sad." +
-//                " Drink at least here in the quiver or even ugly now. Sed carrots airline does not need to focus on soccer");
 
-
+//        InvokeRetrofit();
         initCardStackView();
-    }
-    private void initCardStackView()
-    {
-         manager = new CardStackLayoutManager(this,this);
-         adapter = new CardStackLayoutManagerAdapter(mContent,this);
-
-        cardStackView.setLayoutManager(manager);
-        cardStackView.setAdapter(adapter);
-        manager.setStackFrom(StackFrom.Bottom);
-        manager.setCanScrollHorizontal(true);
-        manager.setCanScrollVertical(true);
-        manager.setVisibleCount(3);
-        manager.setTranslationInterval(8f);
-        manager.setDirections(Direction.FREEDOM);
-        manager.setVisibleCount(3);
-
-
-
-
 
     }
+
+
 
     @Override
     public void onCardDragging(Direction direction, float ratio) {
@@ -114,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
             // -------------------- last position reached, do something ---------------------
              proDialog = ProgressDialog.show(this, "title", "message");
 
-        initData();
+//        initData();
 
             proDialog.dismiss();
         }
@@ -179,51 +160,139 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         }
     }
 
-    private void InvokeRetrofit()
+//    private void InvokeRetrofit()
+//    {
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(BASE_URL)
+//                .addConverterFactory(MyJsonConverter.create())
+//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                .build();
+//
+//
+//        Data_retrofitInterface api = retrofit.create(Data_retrofitInterface.class);
+//        Observable<Contentdata> call = api.getdata();
+//        call.enqueue(new Callback<Contentdata>() {
+//            @Override
+//            public void onResponse(Call<Contentdata> call, Response<Contentdata> response) {
+//
+//                if (response.isSuccessful())
+//                {
+//                    Log.i(TAG,"Response isSuccess"+response.code());
+//                    Contentdata contentdata = response.body();
+//                    for (int i =0;i<contentdata.getData().size();i++)
+//                    {
+//                        mContent.add(contentdata.getData().get(i).getText());
+//                    }
+//                    initCardStackView();
+//
+//
+//                }else
+//                {
+//                    Log.i(TAG,"Response"+response.message());
+//
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Contentdata> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+//                Log.i(TAG,"Response failure"+t.getMessage());
+//
+//
+//
+//            }
+//        });
+//    }
+
+
+    @Override
+    protected void onStop() {
+        compositeDisposable.clear();
+        super.onStop();
+    }
+
+    private void Invoke()
     {
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(MyJsonConverter.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
+                Data_retrofitInterface api = retrofit.create(Data_retrofitInterface.class);
 
 
-        Data_retrofitInterface api = retrofit.create(Data_retrofitInterface.class);
-        Call<Contentdata> call = api.getdata();
-        call.enqueue(new Callback<Contentdata>() {
-            @Override
-            public void onResponse(Call<Contentdata> call, Response<Contentdata> response) {
+                compositeDisposable.add(api.getdata()
+             .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(mContent -> {
 
-                if (response.isSuccessful())
-                {
-                    Log.i(TAG,"Response isSuccess"+response.code());
-                    Contentdata contentdata = response.body();
-                    for (int i =0;i<contentdata.getData().size();i++)
-                    {
-                        mContent.add(contentdata.getData().get(i).getText());
-                    }
-                    initCardStackView();
+                            if (mContent.getData() != null &&
+                                    mContent.getData().size() > 0) {
 
 
-                }else
-                {
-                    Log.i(TAG,"Response"+response.message());
+                                Log.i(TAG,"Chekcing response");
 
-                }
+                                for (int i = 0;i<mContent.getData().size();i++)
+                                {
+                                    mContent.getData().get(i).getText();
+                                    Log.i(TAG,"Chekcing response"+mContent.getData().get(i).getText());
 
-
-            }
-
-            @Override
-            public void onFailure(Call<Contentdata> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.i(TAG,"Response failure"+t.getMessage());
+                                }
 
 
+                                    } else
+                                        Toast.makeText(this, "No data found!", Toast.LENGTH_SHORT).show();
+                                }
+                            ));
 
-            }
-        });
+
     }
+
+//    private void handleResponse(Contentdata contentdata) {
+//
+//
+//
+////        mAndroidArrayList = new ArrayList<>(androidList);
+//        adapter = new CardStackLayoutManagerAdapter(mContent);
+//        cardStackView.setAdapter(adapter);
+//    }
+//
+//
+//
+//
+//
+//    private void handleError(Throwable error) {
+//
+//        Toast.makeText(this, "Error "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//        Log.i(TAG,"handle Error"+error.getLocalizedMessage());
+//    }
+private void initCardStackView()
+{
+    manager = new CardStackLayoutManager(this,this);
+
+    adapter = new CardStackLayoutManagerAdapter(mContent,this);
+    cardStackView.setAdapter(adapter);
+    cardStackView.setLayoutManager(manager);
+
+    Log.i(TAG,"Adpater"+adapter);
+    manager.setStackFrom(StackFrom.Bottom);
+    manager.setCanScrollHorizontal(true);
+    manager.setCanScrollVertical(true);
+    manager.setVisibleCount(3);
+    manager.setTranslationInterval(8f);
+    manager.setDirections(Direction.FREEDOM);
+    manager.setVisibleCount(3);
+
+
+
+Invoke();
+
+}
 
 
 

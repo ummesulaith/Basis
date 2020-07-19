@@ -22,4 +22,6 @@ public class Contentdata {
     public void setData(List<DetailContentData> data) {
         this.data = data;
     }
+
+
 }
