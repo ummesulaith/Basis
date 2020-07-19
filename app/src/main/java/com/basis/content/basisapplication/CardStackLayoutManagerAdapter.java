@@ -27,6 +27,7 @@ class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStackLayout
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_content, parent, false);
         ViewHolder holder = new ViewHolder(view);
+
         return holder;
     }
 
@@ -35,6 +36,8 @@ class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStackLayout
         holder.txtContent.setText(mContent.get(position));
 
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -48,6 +51,7 @@ class CardStackLayoutManagerAdapter extends RecyclerView.Adapter<CardStackLayout
             super(itemView);
             txtContent = itemView.findViewById(R.id.content_txt);
             parentLayout = itemView.findViewById(R.id.parentLayout);
+
         }
     }
 }

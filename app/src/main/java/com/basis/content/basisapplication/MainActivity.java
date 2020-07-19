@@ -2,8 +2,20 @@ package com.basis.content.basisapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
+import androidx.recyclerview.widget.DiffUtil;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Converter;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -12,6 +24,10 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.view.animation.DecelerateInterpolator;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
@@ -20,6 +36,12 @@ import com.yuyakaido.android.cardstackview.Duration;
 import com.yuyakaido.android.cardstackview.RewindAnimationSetting;
 import com.yuyakaido.android.cardstackview.StackFrom;
 
+
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements CardStackListener {
@@ -28,8 +50,11 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     private ArrayList<String> mContent = new ArrayList<>();
     CardStackView cardStackView;
     CardStackLayoutManager manager;
-    Button btn;
+
     private GestureDetectorCompat mDetector;
+    CardStackLayoutManagerAdapter adapter;
+    ProgressDialog proDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
         initData();
+
 
     }
 
@@ -61,16 +87,16 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     private void initCardStackView()
     {
          manager = new CardStackLayoutManager(this,this);
-        CardStackLayoutManagerAdapter adapter = new CardStackLayoutManagerAdapter(mContent,this);
+         adapter = new CardStackLayoutManagerAdapter(mContent,this);
 
-             cardStackView.setLayoutManager(manager);
-                      cardStackView.setAdapter(adapter);
-             manager.setStackFrom(StackFrom.Bottom);
+        cardStackView.setLayoutManager(manager);
+        cardStackView.setAdapter(adapter);
+        manager.setStackFrom(StackFrom.Bottom);
         manager.setCanScrollHorizontal(true);
         manager.setCanScrollVertical(true);
-             manager.setVisibleCount(3);
-             manager.setTranslationInterval(8f);
-             manager.setDirections(Direction.FREEDOM);
+        manager.setVisibleCount(3);
+        manager.setTranslationInterval(8f);
+        manager.setDirections(Direction.FREEDOM);
         manager.setVisibleCount(3);
 
 
@@ -88,6 +114,17 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     @Override
     public void onCardSwiped(Direction direction) {
             Toast.makeText(getApplicationContext()," Direction "+direction,Toast.LENGTH_LONG).show();
+
+
+        if (manager.getTopPosition() == adapter.getItemCount()) {
+            // -------------------- last position reached, do something ---------------------
+             proDialog = ProgressDialog.show(this, "title", "message");
+
+        initData();
+
+            proDialog.dismiss();
+        }
+
 
     }
 
@@ -107,17 +144,16 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
 
 
+
     }
 
     @Override
     public void onCardDisappeared(View view, int position) {
         Log.i(TAG,"position"+position);
 
-
-
-
-
     }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
@@ -148,4 +184,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
             return true;
         }
     }
+
+
 }
