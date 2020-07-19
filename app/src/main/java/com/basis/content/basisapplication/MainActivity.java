@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.view.animation.DecelerateInterpolator;
 
@@ -53,16 +54,18 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     CompositeDisposable compositeDisposable;
 
-
+    ProgressBar simpleProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         cardStackView = (CardStackView)findViewById(R.id.card_stack_view);
-
+         simpleProgressBar=(ProgressBar)findViewById(R.id.simpleProgressBar);
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
         compositeDisposable = new CompositeDisposable();
+
+        getSupportActionBar().hide();
 
         Invoke();
 
@@ -74,21 +77,16 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     @Override
     public void onCardDragging(Direction direction, float ratio) {
-        Toast.makeText(getApplicationContext()," dragging"+direction,Toast.LENGTH_LONG).show();
 
     }
 
     @Override
     public void onCardSwiped(Direction direction) {
-            Toast.makeText(getApplicationContext()," Direction "+direction,Toast.LENGTH_LONG).show();
-
 
         if (manager.getTopPosition() == adapter.getItemCount()) {
             // -------------------- last position reached, do something ---------------------
-//             proDialog = ProgressDialog.show(this, "title", "message");
 
             initCardStackView();
-//            proDialog.dismiss();
         }
 
 
@@ -108,6 +106,13 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     public void onCardAppeared(View view, int position) {
         Log.i(TAG,"Card Appeared position"+position);
 
+        if(position == 0)
+        {
+            simpleProgressBar.setProgress(0);
+        }
+        simpleProgressBar.setProgress(position);
+        int lastPosition = adapter.getItemCount();
+        simpleProgressBar.setMax(lastPosition-1);
 
 
 
@@ -116,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     @Override
     public void onCardDisappeared(View view, int position) {
         Log.i(TAG,"position"+position);
+
+
 
     }
 
@@ -190,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
                                    result.add(mContent.getData().get(i).getText());
                                     Log.i(TAG,"Chekcing response"+mContent.getData().get(i).getText());
+
 
                                 }
                                 proDialog.dismiss();
