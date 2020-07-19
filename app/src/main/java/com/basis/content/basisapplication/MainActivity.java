@@ -2,6 +2,11 @@ package com.basis.content.basisapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -13,6 +18,8 @@ import android.widget.Toast;
 import android.view.animation.DecelerateInterpolator;
 
 import com.basis.content.basisapplication.Adapter.CardStackLayoutManagerAdapter;
+import com.basis.content.basisapplication.Model.Contentdata;
+import com.basis.content.basisapplication.RetrofitInterface.Data_retrofitInterface;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
@@ -26,6 +33,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements CardStackListener {
 
+    private String BASE_URL = "https://gist.githubusercontent.com/anishbajpai014/d482191cb4fff429333c5ec64b38c197/raw/b11f56c3177a9ddc6649288c80a004e7df41e3b9/";
+
+
     private static final String TAG = "Swipe";
     private ArrayList<String> mContent = new ArrayList<>();
     CardStackView cardStackView;
@@ -34,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     private GestureDetectorCompat mDetector;
     CardStackLayoutManagerAdapter adapter;
     ProgressDialog proDialog;
+
 
 
     @Override
@@ -45,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
         initData();
+        InvokeRetrofit();
 
 
     }
@@ -164,6 +176,49 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
             return true;
         }
     }
+
+    private void InvokeRetrofit()
+    {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+
+        Data_retrofitInterface api = retrofit.create(Data_retrofitInterface.class);
+        Call<Contentdata> call = api.getdata();
+        call.enqueue(new Callback<Contentdata>() {
+            @Override
+            public void onResponse(Call<Contentdata> call, Response<Contentdata> response) {
+
+                if (response.isSuccessful())
+                {
+                    Log.i(TAG,"Response isSuccess"+response.code());
+
+
+
+                }else
+                {
+                    Log.i(TAG,"Response"+response.message());
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Contentdata> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i(TAG,"Response failure"+t.getMessage());
+
+
+
+            }
+        });
+    }
+
 
 
 }
